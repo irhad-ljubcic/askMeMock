@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 var CommentSchema = new mongoose.Schema({
     body: String,
@@ -20,15 +21,14 @@ var CommentSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-// Requires population of author
 CommentSchema.methods.toJSONFor = function (user) {
     return {
-        id: this._id,
+        _id: this._id,
         body: this.body,
         createdAt: this.createdAt,
         upvotes: this.upvotes,
         downvotes: this.downvotes,
-        author: this.author.toProfileJSONFor(user)
+        author: this.author.toProfileJSONFor(this.author)
     };
 };
 

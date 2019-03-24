@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./db');
+const path = require("path")
 
 const routes = require('./routes/index'); 
 
@@ -12,6 +13,9 @@ mongoose.connect(config.DB, { useNewUrlParser: true }).then(
 );
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, "client", "build")))
+
 app.use(passport.initialize());
 require('./passport')(passport);
 
@@ -25,6 +29,10 @@ app.get('/', function(req, res) {
 });
 
 const PORT = process.env.PORT || 8000;
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);

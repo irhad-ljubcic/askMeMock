@@ -29,15 +29,27 @@ const QuestionSchema = new Schema({
 },{timestamps:true});
 
 
-QuestionSchema.methods.toJSONFor = function(user){
+QuestionSchema.methods.toJSONFor = function(){
     return {
       _id:this._id,
       body: this.body,
       createdAt: this.createdAt,
       upvotes: this.upvotes,
       downvotes:this.downvotes,
-      author: this.author.toProfileJSONFor(user),
-      comments:this.comments
+      author: this.author.toProfileJSONFor(this.author),
+      comments:this.comments.map((comment) => {
+        return comment.toJSONFor();
+    }),
+    };
+};
+QuestionSchema.methods.toJSONForList = function(user){
+    return {
+      _id:this._id,
+      body: this.body,
+      createdAt: this.createdAt,
+      upvotes: this.upvotes,
+      downvotes:this.downvotes,
+      author: this.author.toProfileJSONFor(this.author),
     };
 };
 

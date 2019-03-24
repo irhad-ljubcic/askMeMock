@@ -11,6 +11,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    image_url:{
+        type: String,
+        required: false
+    },
     password: {
         type: String,
         required: true
@@ -23,8 +27,10 @@ const UserSchema = new Schema({
 
 UserSchema.methods.toProfileJSONFor = function(user){
     return {
-      name: this.name,
-      email: this.email
+      _id:user._id,
+      name: user.name,
+      email: user.email,
+      image_url:user.image_url,
     };
   };
 
