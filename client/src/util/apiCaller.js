@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-
-export const API_URL = window.location.hostname + '/api';
+export const API_URL =  '/api';
 
 
 export default function callApi(endpoint, method = 'get', body) {
