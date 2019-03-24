@@ -44,7 +44,6 @@ export function loadMore(questions,page,isLastPage = false) {
 export function fetchQuestions() {
   return (dispatch) => {
     return callApi('questions').then(res => {
-      console.log("RES:",res);
       dispatch(addQuestions(res.data.questions,res.data.page,res.data.isLastPage));
     });
   };

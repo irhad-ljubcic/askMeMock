@@ -22,12 +22,22 @@ export const loginUser = (user) => dispatch => {
                     localStorage.setItem('jwtToken', token);
                     const decoded = jwt_decode(token);
                     dispatch(setCurrentUser(decoded));
+                    break;
                     case 400:
-                        // Handle 400
+                    dispatch({
+                        type: GET_ERRORS,
+                        payload: res.data.error
+                    });
+                    break;
                     case 401:
-                        // Handle 401
+                        window.location.href = '/login'
+                        break;
                     default:
-                       // Server
+                    dispatch({
+                        type: GET_ERRORS,
+                        payload: res.data.error
+                    });
+                    break;
                 }
             })
             .catch(err => {

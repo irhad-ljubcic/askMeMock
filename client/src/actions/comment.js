@@ -41,7 +41,6 @@ export function handleRating(comment) {
 }
 
 export function handleRatingRequest(rating) {
-  console.log("dispetcho !");
   return (dispatch) => {
     return callApi('questions/comment/rating','post',rating).then(res => {
       dispatch(handleRating(res.data));

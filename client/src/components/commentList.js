@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import CommentItem from './commentItem'
 
 function CommentList(props) {
-  console.log("COMMENTS: ",props.comments);
   return (
     <ul className="list-group">
     {props.comments ? 

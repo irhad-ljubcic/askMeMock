@@ -22,6 +22,10 @@ const HotQuestionReducer = (state = initialState, action) => {
         })
         newData.sort(function(a,b){return b.upvotes - a.upvotes})
         return !findAny && state.data[state.data.length -1].upvotes < action.question.upvotes  ? {data: []} : {data: newData}
+      }else{
+        return{
+          ...state,
+        }
       }
       
     default:

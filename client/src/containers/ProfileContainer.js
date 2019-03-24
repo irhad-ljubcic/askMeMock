@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
 import UpdateProfile from '../components/updateProfile';
 import ChangePassword from '../components/changePassword';
 import { userUpdateRequest, userChangePasswordRequest } from '../actions/user';
@@ -21,7 +19,6 @@ class ProfileContainer extends Component {
         
     }
     toggleUpdateProfile = () => {
-        console.log("upd")
         this.setState({
           showUpdateProfileForm: !this.state.showUpdateProfileForm,
           showChangePasswordForm: false,

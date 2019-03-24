@@ -33,9 +33,9 @@ class Navbar extends Component {
                                  <Link  className="navbar-brand" to="/profile">
                                      {this.props.auth.user.name}
                                  </Link>
-                                 <a href="#" className="nav-link">
+                                 <li className="nav-link">
                                  <FontAwesomeIcon icon={faPowerOff} size="lg" onClick={this.onLogout.bind(this)}/>
-                                 </a>              
+                                 </li>              
                                  </ul>
                                  </div>
                                  :

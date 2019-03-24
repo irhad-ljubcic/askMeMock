@@ -1,5 +1,4 @@
 import React from 'react'
-import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
 class ChangePassword extends React.Component {
   constructor(props) {

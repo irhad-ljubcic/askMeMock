@@ -33,7 +33,6 @@ class MyQuestionContainer extends Component {
 
 // Retrieve data from store as props
 function mapStateToProps(state) {
-  console.log("STATE: ", state);
   return {
     userQuestions: state.userQuestions.data,
     title:"My Questions",

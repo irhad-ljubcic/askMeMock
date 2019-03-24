@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchQuestionSummary } from '../actions/comment';
 import { handleRatingRequest } from "../actions/question";

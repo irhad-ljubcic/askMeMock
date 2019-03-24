@@ -150,7 +150,6 @@ router.post('/rating', passport.authenticate('jwt', { session: false }), (req, r
             })
         })
         .catch(err => {
-            console.log("Error:", err);
             return res.status(400).json({error:'Unable to save'});
         });
 });
@@ -165,7 +164,6 @@ router.post('/comment/rating', passport.authenticate('jwt', { session: false }),
             })
         })
         .catch(err => {
-            console.log("Error:", err);
             return res.status(400).json({error:'Unable to save'});
         });
 });

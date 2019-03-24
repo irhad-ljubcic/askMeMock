@@ -4,7 +4,6 @@ export const API_URL =  '/api';
 
 
 export default function callApi(endpoint, method = 'get', body) {
-  console.log("ENV:",process.env);
   return axios(`/${endpoint}`, {
     baseURL:API_URL,
     method,

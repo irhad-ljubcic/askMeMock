@@ -33,7 +33,6 @@ export function fetchUserQuestions() {
 export function loadMoreRequest(page) {
   return (dispatch) => {
     return callApi(`users/questions?page=${page}`).then(res => {
-      console.log("RES:",res);
       dispatch(loadMore(res.data.questions,res.data.page,res.data.isLastPage));
     });
   };
@@ -64,7 +63,6 @@ export function userHot(userHot) {
   export function userUpdateRequest(user) {
     return (dispatch) => {
       return callApi('users/update','post',user).then(res => {
-        console.log("RESyk",res);
         dispatch(userUpdate(res.data));
       });
     };
@@ -79,7 +77,6 @@ export function userHot(userHot) {
   export function userChangePasswordRequest(password) {
     return (dispatch) => {
       return callApi('users/update/password','post',password).then(res => {
-        console.log("psss",res);
         dispatch(userChangePassword(res.data));
       });
     };

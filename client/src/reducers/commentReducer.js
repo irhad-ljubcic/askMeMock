@@ -30,10 +30,8 @@ const CommentReducer = (state = initialState, action) => {
       }
      }
      case COMMENT_RATING:
-     const newData = state.data.comments.map(item => {
-       console.log('aaa',action.comment);      
+     const newData = state.data.comments.map(item => {     
       if(item._id === action.comment._id){
-        console.log("upo ovdje");
         return action.comment
       }
       return item

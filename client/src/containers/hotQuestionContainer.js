@@ -10,8 +10,9 @@ class HotQuestionContainer extends Component {
   componentDidMount() {
     this.props.fetchHotQuestions();
   }
+  
   componentWillReceiveProps(nextProps){
-     if(nextProps.hotQuestions.length == 0 ){
+     if(nextProps.hotQuestions.length === 0 ){
       this.props.fetchHotQuestions();
      }
   }
