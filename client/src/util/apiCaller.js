@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_URL = 'http://localhost:3000/api';
+export const API_URL = (process.env.BASE_URL || 'http://localhost:3000') + '/api';
 
 
 export default function callApi(endpoint, method = 'get', body) {
