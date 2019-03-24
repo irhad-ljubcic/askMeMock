@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const config = require('./db');
 const path = require("path")
+require("dotenv").config()
 
 const routes = require('./routes/index'); 
 
