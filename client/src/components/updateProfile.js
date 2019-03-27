@@ -1,4 +1,5 @@
 import React from 'react';
+import classnames from 'classnames';
 
 class UpdateProfile extends React.Component {
   constructor(props) {
@@ -7,7 +8,8 @@ class UpdateProfile extends React.Component {
     this.state = {
       username: '',
       email: '',
-      image_url: ''
+      image_url: '',
+      errors:{}
     }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -21,7 +23,13 @@ class UpdateProfile extends React.Component {
       image_url: this.props.user.image_url ? this.props.user.image_url : ''
     })
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
+  }
   handleInputChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -35,6 +43,7 @@ class UpdateProfile extends React.Component {
 
 
   render() {
+    const {errors} = this.state;
     return (
       <div>
         <div>
@@ -44,21 +53,27 @@ class UpdateProfile extends React.Component {
                 <div className="form-group">
                   <input
                     placeholder="Username"
-                    className="form-control"
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.username
+                    })}
                     name="username"
                     onChange={this.handleInputChange}
                     value={this.state.username}>
                   </input>
+                  {errors.username && (<div className="invalid-feedback">{errors.username}</div>)}
                   </div>
                   <div className="form-group">
                   <input
                     placeholder="Email"
-                    className="form-control"
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.email
+                    })}
                     name="email"
                     type="email"
                     onChange={this.handleInputChange}
                     value={this.state.email}>
                   </input>
+                  {errors.email && (<div className="invalid-feedback">{errors.email}</div>)}
                   </div>
                   <div className="form-group">
                   <input

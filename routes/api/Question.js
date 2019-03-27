@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-//TODO ADD VALIDATION FOR QUESTIONS 
+const isEmpty = require('../../validation/is-empty');
 
 const Question = require('../../models/Question');
 const User = require('../../models/User');
@@ -14,7 +14,7 @@ router.get('/single/:id', passport.authenticate('jwt', { session: false }), (req
         .exec()
         .then((question) => {
             if (!question) {
-                res.status(400).json({error:'Could not load question data'})
+                res.status(400).json({generic:'Could not load question data'})
             } else {
                 res.json(question.toJSONFor());
             }
@@ -37,7 +37,7 @@ router.get('/', (req, res) => {
         .exec()
         .then((result) => {
             if (!result) {
-                res.status(400).json({error:'Could not load questions data'})
+                res.status(400).json({generic:'Could not load question data'})
             } else {
                 return res.json({
                     questions: result.map((result) => {
@@ -61,7 +61,7 @@ router.get('/hot', (req, res) => {
         .exec()
         .then((result) => {
             if (!result) {
-                res.status(400).json({error:'Could not load questions data'})
+                res.status(400).json({generic:'Could not load questions data'})
             } else {
                 return res.json({
                     questions: result.map((result) => {
@@ -74,6 +74,9 @@ router.get('/hot', (req, res) => {
 
 
 router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+    if(isEmpty(req.body.body)){
+        res.status(400).json({body:'Cannot post empty question'})
+    }
     User.findOne({ email: req.user.email })
         .then((user) => {
             var question = new Question();
@@ -86,7 +89,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
                 return res.json(question.toJSONForList(user));
             })
                 .catch(err => {
-                    return res.status(400).json({error:'Unable to save'});
+                    return res.status(400).json(res.status(400).json({generic:'Could not save data'}));
                 });
         })
 });
@@ -106,18 +109,22 @@ router.post('/summary', (req, res) => {
         .exec()
         .then((result) => {
             if (!result) {
-                res.status(400).json({error:"Can't find question"})
+                res.status(400).json({generic:'Unable to get data'})
             } else {
                 return res.json({
                     question: result.toJSONFor(result.author)
                 });
             }
         }).catch(err => {
-            return res.status(400).json({error:'Unable to get data'});
+            return res.status(400).json({generic:'Unable to get data'});
         });;
 });
 
 router.post('/comment', passport.authenticate('jwt', { session: false }), (req, res) => {
+
+    if(isEmpty(req.body.body)){
+        res.status(400).json({body:'Cannot post empty comment'})   
+    }
     User.findOne({ email: req.user.email })
         .then((user) => {
             var comment = new Comment();
@@ -131,11 +138,15 @@ router.post('/comment', passport.authenticate('jwt', { session: false }), (req, 
                             question.updateOne({ $push: { comments: comment._id } }).then(
                                  result => {
                                     return res.json(comment.toJSONFor(user));
+                                },err => {
+                                    res.status(400).json({body:'Can not post  comment'})
                                 })
+                        },err =>{
+                            res.status(400).json({body:'Can not post  comment'})
                         })                       
                     })
                 .catch(err => {
-                    return res.status(400).json({error:'Unable to save'});
+                    return res.status(400).json({body:'Unable to save'});
                 });
         })
 });
@@ -147,10 +158,12 @@ router.post('/rating', passport.authenticate('jwt', { session: false }), (req, r
             req.body.type == 'up' ? question.upvotes++ : question.downvotes++;
             question.save().then(question => {
                 return res.json(question.toJSONForList(question.author));
+            },err => {
+                return res.status(400).json({generic:'Unable to update rating'});
             })
         })
         .catch(err => {
-            return res.status(400).json({error:'Unable to save'});
+            return res.status(400).json({generic:'Unable to update rating'});
         });
 });
 
@@ -161,10 +174,14 @@ router.post('/comment/rating', passport.authenticate('jwt', { session: false }),
             req.body.type == 'up' ? comment.upvotes++ : comment.downvotes++;
             comment.save().then(comment => {
                 return res.json(comment.toJSONFor(comment.author));
+            }, err => {
+                return res.status(400).json({generic:'Unable to update rating'});
             })
+        }, err => {
+            return res.status(400).json({generic:'Unable to update rating'});
         })
         .catch(err => {
-            return res.status(400).json({error:'Unable to save'});
+            return res.status(400).json({generic:'Unable to update rating'});
         });
 });
 

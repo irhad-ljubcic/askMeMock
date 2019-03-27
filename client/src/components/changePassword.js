@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import classnames from 'classnames';
 
 class ChangePassword extends React.Component {
   constructor(props) {
@@ -7,11 +8,18 @@ class ChangePassword extends React.Component {
     this.state = {
       old_password: '',
       new_password:'',
+      errors:{}
     }
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 }
-
+componentWillReceiveProps(nextProps) {
+  if (nextProps.errors) {
+    this.setState({
+      errors: nextProps.errors
+    });
+  }
+}
 
   handleInputChange = e => {
     this.setState({
@@ -25,6 +33,7 @@ class ChangePassword extends React.Component {
   };
 
   render() {
+    const {errors} = this.state;
     return (
       <div>
         <div>
@@ -34,22 +43,28 @@ class ChangePassword extends React.Component {
                 <div className="form-group">
                   <input
                     placeholder="Old Password"
-                    className="form-control"
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.old_password
+                    })}
                     name="old_password"
                     type= {'password'}
                     onChange={this.handleInputChange}
                     value={this.state.old_password}>
                   </input>
+                  {errors.old_password && (<div className="invalid-feedback">{errors.old_password}</div>)}
                 </div>
                 <div className="form-group">
                   <input
                     placeholder="New Password"
-                    className="form-control"
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.new_password
+                    })}
                     name="new_password"
                     type= {'password'}
                     onChange={this.handleInputChange}
                     value={this.state.new_password}>
                   </input>
+                  {errors.new_password && (<div className="invalid-feedback">{errors.new_password}</div>)}
                 </div>
                 <div className="form-group">
                   <button type="submit" className="btn btn-primary">Save</button>

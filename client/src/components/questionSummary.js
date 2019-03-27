@@ -59,7 +59,7 @@ function QuestionSummary(props) {
         {props.isAuth ? 
         <div className='row justify-content-md-center'>
         <div className='col-md-12'>
-        <CreateComment question_id = {props.question._id}/>
+        <CreateComment question_id = {props.question._id} errors ={props.errors}/>
         </div>
         </div>
         :

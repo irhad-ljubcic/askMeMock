@@ -30,11 +30,19 @@ class ProfileContainer extends Component {
           showChangePasswordForm: !this.state.showChangePasswordForm,
         });
       };
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) 
+    {
+      if(nextProps.errors){
         this.setState({
-            showUpdateProfileForm: false,
-            showChangePasswordForm: false,
-          });
+          errors: nextProps.errors
+        });
+      }else{
+        this.setState({
+          showUpdateProfileForm: false,
+          showChangePasswordForm: false,
+        });
+      }
+       
     }
     render() {
         return (
@@ -70,12 +78,12 @@ class ProfileContainer extends Component {
                 </div>
                 <div className='container'>
                 {this.state.showUpdateProfileForm ? 
-                <UpdateProfile user={this.props.user} onProfileUpdate = {this.props.onProfileUpdate}/>
+                <UpdateProfile user={this.props.user} onProfileUpdate = {this.props.onProfileUpdate} errors={this.props.errors}/>
                 : ''}                
                 </div>
                 <div className='container'>
                 {this.state.showChangePasswordForm ? 
-                <ChangePassword onPasswordChange = {this.props.onPasswordChange}/>
+                <ChangePassword onPasswordChange = {this.props.onPasswordChange} errors={this.props.errors}/>
                 : ''}                
                 </div>
             </div>
@@ -88,6 +96,7 @@ class ProfileContainer extends Component {
 const  mapStateToProps = state => {
     return {
         user: state.auth.user,
+        errors:state.errors,
     };
 }
 

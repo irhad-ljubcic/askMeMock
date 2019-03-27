@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const validateRegisterInput = require('../../validation/register');
 const validateLoginInput = require('../../validation/login');
+const validateProfileInput = require('../../validation/profile');
+const validateChangePasswordInput = require('../../validation/chagePassword');
 
 const User = require('../../models/User');
 
@@ -19,8 +21,8 @@ router.post('/register', function (req, res) {
         email: req.body.email
     }).then(user => {
         if (user) {
-            return res.status(400).json({
-                error: 'Email already exists'
+            return res.status(400).json({            
+               email:'Email already exists'                           
             });
         }
         else {
@@ -40,6 +42,10 @@ router.post('/register', function (req, res) {
                                 .save()
                                 .then(user => {
                                     res.json(user)
+                                }, err=>{
+                                    return res.status(400).json({             
+                                        generic:'User could not be registred'
+                                });
                                 });
                         }
                     });
@@ -61,8 +67,9 @@ router.post('/login', (req, res) => {
     User.findOne({ email })
         .then(user => {
             if (!user) {
-                return res.status(400).json({
-                    error: 'User not found'
+                return res.status(400).json({ 
+                    email:'Invalid username or password',
+                    password:'Invalid username or password'
                 });
             }
             bcrypt.compare(password, user.password)
@@ -87,7 +94,10 @@ router.post('/login', (req, res) => {
                         });
                     }
                     else {
-                        return res.status(400).json({error:'Incorrect Password'});
+                        return res.status(400).json({ 
+                            email:'Invalid username or password',
+                            password:'Invalid username or password'
+                        });
                     }
                 });
         });
@@ -112,7 +122,9 @@ router.get('/hot', (req, res) => {
         .exec()
         .then((result) => {
             if (!result) {
-                return res.status(400).json({error:'User not found '});
+                return res.status(400).json({
+                  generic:"Error loading data..."
+                });
             } else {
                 result.sort(function (a, b) { return b.questions.length - a.questions.length })
                 var result = result.slice(0, 20);
@@ -146,7 +158,9 @@ router.get('/questions', passport.authenticate('jwt', { session: false }), (req,
         })
         .then((result) => {
             if (!result) {
-                return res.status(400).json({error:'Question not found '});
+                return res.status(400).json({errors:{
+                    generic:"Error loading data..."
+                  }});
             } else {
                 return res.json({
                     questions: result.questions,
@@ -159,10 +173,18 @@ router.get('/questions', passport.authenticate('jwt', { session: false }), (req,
 
 router.post('/update', passport.authenticate('jwt', { session: false }), (req, res) => {
 
+    const { errors, isValid } = validateProfileInput(req.body);
+
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
     User.findOne({ email: req.user.email })
         .then(user => {
             if (!user) {
-                return res.status(400).json({error:'User not found '});
+                return res.status(400).json({errors:{
+                    generic:"Error loading data..."
+                }});
             }
             if (req.body.email != req.user.email) {
                 var canUpdate;
@@ -171,14 +193,18 @@ router.post('/update', passport.authenticate('jwt', { session: false }), (req, r
                     user.email = req.body.email
                 }
                 else {
-                    return res.status(400).json({error:'Email Allready used '});
+                    return res.status(400).json({errors:{
+                        email:"Email Already used"
+                    }});
                 }
             }
             user.name = req.body.username;
             user.image_url = req.body.image_url;
             user.save().then(result => {
                 return res.json(result.toProfileJSONFor(result));
-            }, (err) => { return res.status(400).json({error:'Unable to save'}); }
+            }, (err) => { return res.status(400).json({errors:{
+                generic:"Unable to save profile data"
+            }}); }
             )
 
         });
@@ -186,10 +212,18 @@ router.post('/update', passport.authenticate('jwt', { session: false }), (req, r
 
 router.post('/update/password', passport.authenticate('jwt', { session: false }), (req, res) => {
 
+    const { errors, isValid } = validateChangePasswordInput(req.body);
+
+    if (!isValid) {
+        return res.status(400).json(errors);
+    }
+
     User.findOne({ email: req.user.email })
         .then(user => {
             if (!user) {
-                return res.status(400).json({error:'User not found '});
+                return res.status(400).json({errors:{
+                    generic:"Error loading data..."
+                }});
             }
             bcrypt.compare(req.body.old_password, user.password)
                 .then(isMatch => {
@@ -205,6 +239,10 @@ router.post('/update/password', passport.authenticate('jwt', { session: false })
                                             .save()
                                             .then(user => {
                                                return  res.json(user.toProfileJSONFor(user))
+                                            },err=>{
+                                                return res.status(400).json({errors:{
+                                                    generic:"Error saving data..."
+                                                }});
                                             });
                                     }
                                 });
@@ -212,7 +250,9 @@ router.post('/update/password', passport.authenticate('jwt', { session: false })
                         });
                     }
                     else {
-                        return res.status(400).json({error:'Invalid old password'});
+                        return res.status(400).json({errors:{
+                            old_password:"Invalid password",
+                        }});
                     }
                 })
         });

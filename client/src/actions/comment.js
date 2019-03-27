@@ -1,4 +1,5 @@
 import callApi from '../util/apiCaller';
+import { GET_ERRORS } from './types';
 
 export const ADD_QUESTION_SUMMARY = 'ADD_QUESTION_SUMMARY';
 export const ADD_COMMENT = 'ADD_COMMENT';
@@ -14,7 +15,12 @@ export function questionSummary(question) {
 export function fetchQuestionSummary(id) {
   return (dispatch) => {
     return callApi('questions/summary', 'post', { id: id }).then(res => {
-      dispatch(questionSummary(res.data.question));
+      if(res.status == 200){
+        dispatch(questionSummary(res.data.question));
+      }else{
+        dispatch({type: GET_ERRORS,payload: res.data});
+      }
+      
     });
   };
 }
@@ -28,7 +34,11 @@ export function addComment(comment) {
 export function addCommentRequest(comment) {
   return (dispatch) => {
     return callApi('questions/comment', 'post', comment).then(res => {
+      if(res.status == 200){
       dispatch(addComment(res.data));
+    }else{
+      dispatch({type: GET_ERRORS,payload: res.data});
+    }
     });
   };
 }

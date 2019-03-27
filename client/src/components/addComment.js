@@ -1,15 +1,28 @@
 import React from 'react';
+import classnames from 'classnames';
 
 class AddComment extends React.Component {
   state = {
     body: '',
-    question_id:''
+    question_id: '',
+    errors: {}
   };
-  componentDidMount(){
+
+  componentDidMount() {
+    this.setState({
+      question_id: this.props.match.params.id,
+      body: '',
+      errors: {}
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps,"props");
+    if (nextProps.errors) {
       this.setState({
-        question_id: this.props.match.params.id,
-        body:''
-      })
+        errors: nextProps.errors
+      });
+    }
   }
 
   handleInputChange = e => {
@@ -23,13 +36,14 @@ class AddComment extends React.Component {
     if (this.state.body.trim()) {
       this.props.onAddComment(this.state);
       this.setState({
-        body:''
+        body: ''
       })
     }
   };
 
 
   render() {
+    const {errors} = this.state;
     return (
       <div>
         <div>
@@ -41,15 +55,23 @@ class AddComment extends React.Component {
                     cols="19"
                     rows="2"
                     placeholder="Comment"
-                    className="form-control"
+                    className={classnames('form-control form-control-lg', {
+                      'is-invalid': errors.body
+                    })}
                     name="body"
                     onChange={this.handleInputChange}
                     value={this.state.body}>
                   </textarea>
+                  {errors.body && (<div className="invalid-feedback">{errors.body}</div>)}
                 </div>
+                {!this.state.body ? 
+                <div className="form-group">
+                  <button disabled type="submit" className="btn btn-primary">Add Comment </button>
+                </div>:
                 <div className="form-group">
                   <button type="submit" className="btn btn-primary">Add Comment </button>
                 </div>
+                }
               </form>
             </div>
           </div>

@@ -16,7 +16,7 @@ class CommentContainer extends Component {
       <div>
         <div>      
         <Navbar />
-        { this.props.question.length == 0 ? <div>Loading ...</div> : <QuestionSummary question ={this.props.question} onRatingChange = {this.props.onRatingChange} isAuth={this.props.isAuth} />}       
+        { this.props.question.length == 0 ? <div>Loading ...</div> : <QuestionSummary question ={this.props.question} onRatingChange = {this.props.onRatingChange} isAuth={this.props.isAuth} errors={this.props.errors} />}       
         </div>
       </div>
     );
@@ -28,7 +28,8 @@ class CommentContainer extends Component {
 function mapStateToProps(state) {
   return {
     question: state.question.data,
-    isAuth:state.auth.isAuthenticated
+    isAuth:state.auth.isAuthenticated,
+    errors:state.errors
   };
 }
 

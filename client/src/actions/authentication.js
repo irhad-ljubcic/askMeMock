@@ -4,11 +4,20 @@ import callApi from '../util/apiCaller';
 
 export const registerUser = (user, history) => dispatch => {
     return callApi('users/register','post', user)
-            .then(res => history.push('/login'))
+            .then(res => { 
+                if(res.status == 400){
+                    dispatch({
+                        type: GET_ERRORS,
+                        payload: res.data
+                    });
+                }else{
+                    history.push('/login')
+                }
+                })
             .catch(err => {
                 dispatch({
                     type: GET_ERRORS,
-                    payload: err.response.data
+                    payload: err.data
                 });
             });
 }
@@ -26,16 +35,13 @@ export const loginUser = (user) => dispatch => {
                     case 400:
                     dispatch({
                         type: GET_ERRORS,
-                        payload: res.data.error
+                        payload: res.data
                     });
                     break;
-                    case 401:
-                        window.location.href = '/login'
-                        break;
                     default:
                     dispatch({
                         type: GET_ERRORS,
-                        payload: res.data.error
+                        payload: res.data
                     });
                     break;
                 }
@@ -43,7 +49,7 @@ export const loginUser = (user) => dispatch => {
             .catch(err => {
                 dispatch({
                     type: GET_ERRORS,
-                    payload: err.response.data
+                    payload: err.data
                 });
             });
 }
